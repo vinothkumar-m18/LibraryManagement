@@ -1,31 +1,44 @@
 import java.util.ArrayList;
+import java.util.Scanner;
+
 public class Librarian {
   private ArrayList<User> userList;
   private ArrayList<Book> bookList;
+  private Scanner input;
   private User user;
   private Book book;
-  public Librarian(){
-    this.user = new User();
-    this.book = new Book();
-  }
-  private String librarianName;
-  private long librarianId;
-  private String librarianGmailId;
 
-  public void userRegistration(){
+  public Librarian() {
+    this.input = new Scanner(System.in);
+  }
+  
+  public void userRegistration() {
 
   }
-  public void verifyUser(){
+
+  public void verifyUser() {
 
   }
-  public void addBook(){
-    book.setBookName("The Science Of Self-Discipline");
-    book.setBookAuthor("Peter Hollins");
-    book.setBookGenre("Self Development");
+
+  public void addBook() {
+    System.out.println("Enter the book name ");
+    book.setBookName(input.nextLine());
+    System.out.println("Enter the author name ");
+    book.setBookAuthor(input.nextLine());
+    System.out.println("Enter the book genre ");
+    book.setBookGenre(input.nextLine());
     book.setBookStatus(true);
-    bookList.add(book);
+    if (bookList.add(book)) {
+      System.out.println("Book added");
+    } else {
+      System.out.println("Book not added");
+    }
   }
-  public void removeBook(){}
-  public void canBorrow(){}
+
+  public void removeBook() {
+  }
+
+  public void canBorrow() {
+  }
 
 }
