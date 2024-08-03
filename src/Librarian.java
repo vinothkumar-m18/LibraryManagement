@@ -28,22 +28,30 @@ public class Librarian {
   private void readBooksFromDisk(){
     try(BufferedReader br = new BufferedReader(new FileReader("Books.txt"))){
       String str;
-      while((str = br.readLine()) != null){
-        String[] parts = str.split("|");
-        book.setBookName(parts[0]);
-        book.setBookAuthor(parts[1]);
-        book.setBookGenre(parts[2]);
-        book.setNoOfStocks(Integer.parseInt(parts[3]));
-        bookList.add(book);
+      while((str = br.readLine()) != null){        
+        String[] parts = str.split("\\|");
+        if(parts.length != 4){
+          System.out.println("Invalid format " + str);
+          continue;          
+        }
+        book = new Book();
+        try{
+          book.setBookName(parts[0].trim());
+          book.setBookAuthor(parts[1].trim());
+          book.setBookGenre(parts[2].trim());
+          book.setNoOfStocks(Integer.parseInt(parts[3].trim()));
+          bookList.add(book);
+        }catch(NumberFormatException e){
+        System.err.println("Error converting string to number. " + e);
+        }
       }
     }catch(FileNotFoundException e){
       System.err.println("Error locating the file. please provide a valid path " + e);
     }catch(IOException e){
       System.err.println("Error closing the input stream. " + e);
-    }catch(NumberFormatException e){
-      System.err.println("Error converting string to number format. " + e);
     }
   }
+
   public void userRegistration(){    
     System.out.println("Enter your name ");
     user.setUserName(input.nextLine());
@@ -55,7 +63,7 @@ public class Librarian {
   }
   public void viewBookList(){
     for(Book book : bookList){
-      System.out.println(book.getBookName() + "; " + book.getBookAuthor() + "; " + book.getBookGenre() + "; " + book.getStatus());
+      System.out.println(book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | " + book.getStatus());
 
     }
   }
@@ -71,7 +79,11 @@ public class Librarian {
     book.setBookAuthor(input.nextLine());
     System.out.println("Enter the book genre ");
     book.setBookGenre(input.nextLine());
-    book.setBookStatus(true);
+    try{
+      book.setNoOfStocks(Integer.parseInt(input.nextLine()));
+    }catch(NumberFormatException e){
+      System.err.println("Error converting string to number. " + e);
+    }
     if (bookList.add(book)) {
       System.out.println("Book added");
     } else {
