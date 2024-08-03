@@ -10,8 +10,9 @@ public class Librarian {
 
   public Librarian() {
     this.input = new Scanner(System.in);
+    bookList = new ArrayList<>();
   }
-  
+
   public void userRegistration() {
 
   }
@@ -19,8 +20,15 @@ public class Librarian {
   public void verifyUser() {
 
   }
+  public void viewBookList(){
+    for(Book book : bookList){
+      System.out.println(book.getBookName() + "; " + book.getBookAuthor() + "; " + book.getBookGenre() + "; " + book.getStatus());
+      
+    }
+  }
 
   public void addBook() {
+    book = new Book();
     System.out.println("Enter the book name ");
     book.setBookName(input.nextLine());
     System.out.println("Enter the author name ");
