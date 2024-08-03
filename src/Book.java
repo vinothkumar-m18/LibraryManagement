@@ -2,7 +2,8 @@ public class Book {
   private String bookName;
   private String bookAuthor;
   private String bookGenre;
-  private boolean isAvailable;
+  private int noOfStocks;
+
   public void setBookName(String bookName){
     this.bookName = bookName;
   }
@@ -21,11 +22,11 @@ public class Book {
   public String getBookGenre(){
     return this.bookGenre;
   }
-  public void setBookStatus(boolean status){
-    this.isAvailable = status;
+  public void setNoOfStocks(int noOfStocks){
+    this.noOfStocks = noOfStocks;
   }
-  public boolean getStatus(){
-    return this.isAvailable;
+  public String getStatus(){
+    return (noOfStocks > 0) ? "AVAILABLE" : "UNAVAILABLE";
   }
   
 }
