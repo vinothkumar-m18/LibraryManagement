@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-
+import java.lang.Math;
 public class Librarian {
   private ArrayList<User> userList;
   private ArrayList<Book> bookList;
@@ -10,20 +10,30 @@ public class Librarian {
 
   public Librarian() {
     this.input = new Scanner(System.in);
-    bookList = new ArrayList<>();
+    bookList = new ArrayList<Book>();
+    userList = new ArrayList<User>();    
+    user = new User();
+    
   }
 
-  public void userRegistration() {
-
+  private long idGenerator(){
+    long id = 10_000;
+    return id + 1;
   }
-
-  public void verifyUser() {
-
+  public void userRegistration(){
+    user = new User();
+    System.out.println("Enter your name ");
+    user.setUserName(input.nextLine());
+    System.out.println("Enter your gmail id ");
+    user.setUserGmailId(input.nextLine());
+    user.setUserId(idGenerator());
+    user.setUserStatus("REGISTERED");
+    System.out.println("user " + user.getUserId() + "registered");
   }
   public void viewBookList(){
     for(Book book : bookList){
       System.out.println(book.getBookName() + "; " + book.getBookAuthor() + "; " + book.getBookGenre() + "; " + book.getStatus());
-      
+
     }
   }
 
