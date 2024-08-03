@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -14,11 +18,31 @@ public class Librarian {
     userList = new ArrayList<User>();    
     user = new User();
     book = new Book();
+    readBooksFromDisk();
   }
 
   private long idGenerator(){
     long id = 10_000;
     return id + 1;
+  }
+  private void readBooksFromDisk(){
+    try(BufferedReader br = new BufferedReader(new FileReader("Books.txt"))){
+      String str;
+      while((str = br.readLine()) != null){
+        String[] parts = str.split("|");
+        book.setBookName(parts[0]);
+        book.setBookAuthor(parts[1]);
+        book.setBookGenre(parts[2]);
+        book.setNoOfStocks(Integer.parseInt(parts[3]));
+        bookList.add(book);
+      }
+    }catch(FileNotFoundException e){
+      System.err.println("Error locating the file. please provide a valid path " + e);
+    }catch(IOException e){
+      System.err.println("Error closing the input stream. " + e);
+    }catch(NumberFormatException e){
+      System.err.println("Error converting string to number format. " + e);
+    }
   }
   public void userRegistration(){    
     System.out.println("Enter your name ");
