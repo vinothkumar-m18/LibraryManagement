@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.lang.Math;
 public class Librarian {
@@ -57,7 +58,15 @@ public class Librarian {
     }
   }
 
-  public void removeBook() {
+  public void removeBook(String bookName) {
+    Iterator<Book> iterator = bookList.iterator();
+    while(iterator.hasNext()){
+      if(iterator.next().getBookName().equals(bookName)){
+        iterator.remove();
+        System.out.println("Book removed");
+        break;
+      }
+    }
   }
 
   public void canBorrow() {
