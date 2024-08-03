@@ -28,7 +28,7 @@ public class Librarian {
     user.setUserGmailId(input.nextLine());
     user.setUserId(idGenerator());
     user.setUserStatus("REGISTERED");
-    System.out.println("user " + user.getUserId() + "registered");
+    System.out.println("Registered Successfully");
   }
   public void viewBookList(){
     for(Book book : bookList){
@@ -36,7 +36,11 @@ public class Librarian {
 
     }
   }
-
+  public void viewUserList(){
+    for(User user : userList){
+      System.out.println(user.getUserId() + "; " + user.getUserName() + "; " + user.getUserGmailId() + "; " + user.getUserStatus());      
+    }
+  }  
   public void addBook() {
     book = new Book();
     System.out.println("Enter the book name ");
