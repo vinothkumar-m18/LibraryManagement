@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
-import java.lang.Math;
 public class Librarian {
   private ArrayList<User> userList;
   private ArrayList<Book> bookList;
@@ -14,15 +13,14 @@ public class Librarian {
     bookList = new ArrayList<Book>();
     userList = new ArrayList<User>();    
     user = new User();
-    
+    book = new Book();
   }
 
   private long idGenerator(){
     long id = 10_000;
     return id + 1;
   }
-  public void userRegistration(){
-    user = new User();
+  public void userRegistration(){    
     System.out.println("Enter your name ");
     user.setUserName(input.nextLine());
     System.out.println("Enter your gmail id ");
@@ -43,7 +41,6 @@ public class Librarian {
     }
   }  
   public void addBook() {
-    book = new Book();
     System.out.println("Enter the book name ");
     book.setBookName(input.nextLine());
     System.out.println("Enter the author name ");
@@ -69,7 +66,6 @@ public class Librarian {
     }
   }
 
-  public void canBorrow() {
-  }
+  
 
 }
