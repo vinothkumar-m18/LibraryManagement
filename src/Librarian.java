@@ -53,6 +53,7 @@ public class Librarian {
   }
 
   public void userRegistration(){    
+    user = new User();
     System.out.println("Enter your name ");
     user.setUserName(input.nextLine());
     System.out.println("Enter your gmail id ");
@@ -60,6 +61,7 @@ public class Librarian {
     user.setUserId(idGenerator());
     user.setUserStatus("REGISTERED");
     System.out.println("Registered Successfully");
+    userList.add(user);
   }
   public void viewBookList(){
     for(Book book : bookList){
@@ -69,7 +71,7 @@ public class Librarian {
   }
   public void viewUserList(){
     for(User user : userList){
-      System.out.println(user.getUserId() + "; " + user.getUserName() + "; " + user.getUserGmailId() + "; " + user.getUserStatus());      
+      System.out.println(user.getUserId() + " | " + user.getUserName() + " | " + user.getUserGmailId() + " | " + user.getUserStatus());      
     }
   }  
   public void addBook() {
