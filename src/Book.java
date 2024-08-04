@@ -22,6 +22,9 @@ public class Book {
   public String getBookGenre(){
     return this.bookGenre;
   }
+  public void setStockCount(int count){
+    this.stockCount = count;
+  }
   public void setStockCount(String operation){ 
     if(operation.equals("BORROW")){
        stockCount -= 1;
@@ -33,7 +36,7 @@ public class Book {
   }
 
   public String getStatus(){
-    return (noOfStocks > 0) ? "AVAILABLE" : "UNAVAILABLE";
+    return (stockCount > 0) ? "AVAILABLE" : "UNAVAILABLE";
   }
   
 }
