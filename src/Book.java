@@ -2,7 +2,7 @@ public class Book {
   private String bookName;
   private String bookAuthor;
   private String bookGenre;
-  private int noOfStocks;
+  private int stockCount;
 
   public void setBookName(String bookName){
     this.bookName = bookName;
@@ -22,9 +22,16 @@ public class Book {
   public String getBookGenre(){
     return this.bookGenre;
   }
-  public void setNoOfStocks(int noOfStocks){
-    this.noOfStocks = noOfStocks;
+  public void setStockCount(String operation){ 
+    if(operation.equals("BORROW")){
+       stockCount -= 1;
+    }else if(operation.equals("RETURN")){
+      stockCount += 1;
+    }else{
+      System.out.println("Invalid operation");
+    }
   }
+
   public String getStatus(){
     return (noOfStocks > 0) ? "AVAILABLE" : "UNAVAILABLE";
   }
