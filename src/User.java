@@ -27,7 +27,10 @@ public class User {
   public String getUserStatus(){
     return this.userStatus;
   }
-  public void borrowBook(){}
+  public void borrowBook(String bookName){
+    Librarian librarian = new Librarian();
+    librarian.borrowToUser(this, bookName);
+  }
   public void returnBook(){}
   
 }
