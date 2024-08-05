@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
+import java.lang.Math;
 public class Librarian {
   private ArrayList<User> userList;
   private ArrayList<Book> bookList;
   private Scanner input;
   private User user;
   private Book book;
+  private String LibrarianName;
+  private String LibrarianId;
 
   public Librarian() {
     this.input = new Scanner(System.in);
@@ -21,47 +24,67 @@ public class Librarian {
     readBooksFromDisk();
   }
 
-  private long idGenerator(){
-    long id = 10_000;
-    return id + 1;
+  
+  public void returnBookFromUser(String bookName){
+    Book book = findBook(bookName);
+    book.setStockCount("RETURN");
+    System.out.println("Book returned successfully");
   }
-  private void readBooksFromDisk(){
-    try(BufferedReader br = new BufferedReader(new FileReader("Books.txt"))){
-      String str;
-      while((str = br.readLine()) != null){        
-        String[] parts = str.split("\\|");
-        if(parts.length != 4){
-          System.out.println("Invalid format " + str);
-          continue;          
-        }
-        book = new Book();
-        try{
-          book.setBookName(parts[0].trim());
-          book.setBookAuthor(parts[1].trim());
-          book.setBookGenre(parts[2].trim());
-          book.setNoOfStocks(Integer.parseInt(parts[3].trim()));
-          bookList.add(book);
-        }catch(NumberFormatException e){
-        System.err.println("Error converting string to number. " + e);
-        }
+  private Book findBook(String bookName){
+    for(Book book : bookList){
+      if(!book.getBookName().equals(bookName)){
+        System.out.println("Book not found");
+      }else{      
+        return book;
       }
-    }catch(FileNotFoundException e){
-      System.err.println("Error locating the file. please provide a valid path " + e);
-    }catch(IOException e){
-      System.err.println("Error closing the input stream. " + e);
     }
+    return null;
   }
 
-  public void userRegistration(){    
+  private boolean isBookAvailable(String bookName){
+    Book book = findBook(bookName);
+    if(book.getStatus().equals("AVAILABLE")){
+      return true;
+    }
+    return false;
+  }
+  public void borrowToUser(User user, String bookName){
+    if(findUser(user.getUserId()) != null){
+      if(isBookAvailable(bookName)){
+        Book book = findBook(bookName);
+        book.setStockCount("BORROW");
+        System.out.println("Book borrowed successfully");
+      }else{
+        System.out.println("Book currently unavailable. Try later");
+      }
+    }else{
+      System.out.println("Unregistered users can't borrow a book ");
+    }
+  }
+  public boolean userLogin(String userId, String password){
+    User user = findUser(userId);
+    if(user != null){
+      if(user.getuserPassword().equals(password)){
+        return true;
+      }else{
+        System.out.println("Enter a valid password");
+        return false;
+      }
+    }else{
+      System.out.println("You are not registered yet.");
+      return false;
+    }
+  }
+  public boolean userRegistration(String name, String gmailId, String password){    
     user = new User();
-    System.out.println("Enter your name ");
-    user.setUserName(input.nextLine());
-    System.out.println("Enter your gmail id ");
-    user.setUserGmailId(input.nextLine());
-    user.setUserId(idGenerator());
+    user.setUserName(name);
+    user.setUserId(idGenerator(name));
+    user.setUserGmailId(gmailId);
     user.setUserStatus("REGISTERED");
-    System.out.println("Registered Successfully");
-    userList.add(user);
+    if(userList.add(user)){
+      return true;
+    }
+    return false;
   }
   public void viewBookList(){
     for(Book book : bookList){
@@ -71,7 +94,7 @@ public class Librarian {
   }
   public void viewUserList(){
     for(User user : userList){
-      System.out.println(user.getUserId() + " | " + user.getUserName() + " | " + user.getUserGmailId() + " | " + user.getUserStatus());      
+      System.out.println(user.getUserId() + " | " + user.getuserPassword() + " | " + user.getUserName() + " | " + user.getUserGmailId() + " | " + user.getUserStatus());      
     }
   }  
   public void addBook() {
@@ -82,7 +105,7 @@ public class Librarian {
     System.out.println("Enter the book genre ");
     book.setBookGenre(input.nextLine());
     try{
-      book.setNoOfStocks(Integer.parseInt(input.nextLine()));
+      book.setStockCount(Integer.parseInt(input.nextLine()));
     }catch(NumberFormatException e){
       System.err.println("Error converting string to number. " + e);
     }
@@ -103,7 +126,43 @@ public class Librarian {
       }
     }
   }
-
+  private void readBooksFromDisk(){
+    try(BufferedReader br = new BufferedReader(new FileReader("Books.txt"))){
+      String str;
+      while((str = br.readLine()) != null){        
+        String[] parts = str.split("\\|");
+        if(parts.length != 4){
+          System.out.println("Invalid format " + str);
+          continue;          
+        }
+        book = new Book();
+        try{
+          book.setBookName(parts[0].trim());
+          book.setBookAuthor(parts[1].trim());
+          book.setBookGenre(parts[2].trim());
+          book.setStockCount((Integer.parseInt(parts[3].trim())));
+          bookList.add(book);
+        }catch(NumberFormatException e){
+        System.err.println("Error converting string to number. " + e);
+        }
+      }
+    }catch(FileNotFoundException e){
+      System.err.println("Error locating the file. please provide a valid path " + e);
+    }catch(IOException e){
+      System.err.println("Error closing the input stream. " + e);
+    }
+  }
+  private String idGenerator(String userName){
+    return userName + "" + (int)(Math.random() * 100);
+  }
+  private User findUser(String userId){
+    for(User user : userList){
+      if(user.getUserId().equals(userId)){
+        return user;
+      }
+    }
+    return null;
+  }
   
 
 }
