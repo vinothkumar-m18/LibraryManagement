@@ -1,4 +1,6 @@
+import java.io.FileWriter;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,7 +12,6 @@ public class Librarian {
   private ArrayList<User> userList;
   private ArrayList<Book> bookList;
   private Scanner input;
-  private User user;
   private Book book;
   private String LibrarianName;
   private String LibrarianId;
@@ -19,30 +20,63 @@ public class Librarian {
     this.input = new Scanner(System.in);
     bookList = new ArrayList<Book>();
     userList = new ArrayList<User>();    
-    user = new User();
     book = new Book();
-    readBooksFromDisk();
+    loadBooksFromDisk();
+    loadUsersDataFromDisk();
   }
 
-  
+  private void writeUserDataToDisk(User user){
+    try(BufferedWriter bw = new BufferedWriter(new FileWriter("Users.txt", true))){    
+        String userData = user.getUserId() + " | "  + user.getuserPassword() + " | " + user.getUserName() + " | " + user.getUserGmailId() + " | " + user.getUserStatus();
+        bw.write(userData);
+        bw.newLine();
+      
+    }catch(IOException e){
+      System.err.println("Error writing to file " + e);
+    }
+  }
+  private void loadUsersDataFromDisk(){
+    try(BufferedReader br = new BufferedReader(new FileReader("Users.txt"))){    
+      String userData;
+      while((userData = br.readLine()) != null){      
+        String parts[] = userData.split("\\|");
+        if(parts.length == 5){
+          User user = new User();
+          user.setUserId(parts[0].trim());
+          user.setUserPassword(parts[1].trim());
+          user.setUserName(parts[2].trim());
+          user.setUserGmailId(parts[3].trim());
+          user.setUserStatus(parts[4].trim());
+          userList.add(user);
+        }else{
+          System.out.println("Invalid format of data while reading users data from disk");
+          break;          
+        }
+      }
+    }catch(FileNotFoundException e){
+      System.err.println("Error locating the file. " + e);
+    }catch(IOException e){
+      System.err.println("Error reading the file. " + e);
+    }
+  }
   public void returnBookFromUser(String bookName){
     Book book = findBook(bookName);
-    book.setStockCount("RETURN");
+    book.setStockCount(book, "RETURN");
     System.out.println("Book returned successfully");
   }
   private Book findBook(String bookName){
     for(Book book : bookList){
-      if(!book.getBookName().equals(bookName)){
-        System.out.println("Book not found");
-      }else{      
+      if(book.getBookName().equals(bookName)){
         return book;
       }
     }
     return null;
   }
-
   private boolean isBookAvailable(String bookName){
     Book book = findBook(bookName);
+    if(book == null){
+      System.out.println("null at " + bookName);
+    }
     if(book.getStatus().equals("AVAILABLE")){
       return true;
     }
@@ -52,7 +86,7 @@ public class Librarian {
     if(findUser(user.getUserId()) != null){
       if(isBookAvailable(bookName)){
         Book book = findBook(bookName);
-        book.setStockCount("BORROW");
+        book.setStockCount(book, "BORROW");
         System.out.println("Book borrowed successfully");
       }else{
         System.out.println("Book currently unavailable. Try later");
@@ -76,19 +110,32 @@ public class Librarian {
     }
   }
   public boolean userRegistration(String name, String gmailId, String password){    
-    user = new User();
+    User user = new User();
     user.setUserName(name);
     user.setUserId(idGenerator(name));
     user.setUserGmailId(gmailId);
+    user.setUserPassword(password);
     user.setUserStatus("REGISTERED");
+    System.out.println("\nYour user details. [note : Take note of your user id and password ]");
     if(userList.add(user)){
+    printUserDetails(user.getUserId());
+      writeUserDataToDisk(user);
       return true;
     }
     return false;
   }
   private void printBookDetails(Book book){
-    System.out.println(book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | " + book.getStatus());
+    System.out.println(book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | " + book.getStockCount());
   }
+  private void printUserDetails(String userId){
+    User user = findUser(userId);
+    if(user != null){
+      System.out.println(user.getUserId() + " | " + user.getuserPassword() + " | " + user.getUserName() + " | " + user.getUserGmailId() + " | " + user.getUserStatus());      
+    }else{
+      System.out.println("User not found");
+    }      
+  }
+
   public void viewBookList(){
     for(Book book : bookList){
       printBookDetails(book);
@@ -96,7 +143,7 @@ public class Librarian {
   }
   public void viewUserList(){
     for(User user : userList){
-      System.out.println(user.getUserId() + " | " + user.getuserPassword() + " | " + user.getUserName() + " | " + user.getUserGmailId() + " | " + user.getUserStatus());      
+      printUserDetails(user.getUserId());
     }
   }  
   public void addBook() {
@@ -111,13 +158,23 @@ public class Librarian {
     }catch(NumberFormatException e){
       System.err.println("Error converting string to number. " + e);
     }
-    if (bookList.add(book)) {
+    if (bookList.add(book) && (addBookToDisk(book))) {
       System.out.println("Book added");
     } else {
       System.out.println("Book not added");
     }
   }
-
+  private boolean addBookToDisk(Book book){
+    try(BufferedWriter bw = new BufferedWriter(new FileWriter("Books.txt", true))){
+      String bookDetails = book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | " + book.getStockCount();
+      bw.write(bookDetails);      
+      bw.newLine();      
+      return true;
+    }catch(IOException e){
+      System.err.println("Error writing task to disk. " + e);
+    }
+    return false;
+  }
   public void removeBook(String bookName) {
     Iterator<Book> iterator = bookList.iterator();
     while(iterator.hasNext()){
@@ -128,7 +185,7 @@ public class Librarian {
       }
     }
   }
-  private void readBooksFromDisk(){
+  private void loadBooksFromDisk(){
     try(BufferedReader br = new BufferedReader(new FileReader("Books.txt"))){
       String str;
       while((str = br.readLine()) != null){        
@@ -157,10 +214,10 @@ public class Librarian {
   private String idGenerator(String userName){
     return userName + "" + (int)(Math.random() * 100);
   }
-  private User findUser(String userId){
+  public User findUser(String userId){
     for(User user : userList){
       if(user.getUserId().equals(userId)){
-        return user;
+        return user;        
       }
     }
     return null;
