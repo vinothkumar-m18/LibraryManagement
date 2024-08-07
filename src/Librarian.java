@@ -86,10 +86,12 @@ public class Librarian {
     }
     return false;
   }
+  private void printBookDetails(Book book){
+    System.out.println(book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | " + book.getStatus());
+  }
   public void viewBookList(){
     for(Book book : bookList){
-      System.out.println(book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | " + book.getStatus());
-
+      printBookDetails(book);
     }
   }
   public void viewUserList(){
@@ -163,6 +165,12 @@ public class Librarian {
     }
     return null;
   }
-  
+  public void showAllAvailableBooks(){
+    for(Book book : bookList){
+      if(isBookAvailable(book.getBookName())){
+        printBookDetails(book);
+      }
+    }
+  }
 
 }

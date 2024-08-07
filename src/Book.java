@@ -25,11 +25,11 @@ public class Book {
   public void setStockCount(int count){
     this.stockCount = count;
   }
-  public void setStockCount(String operation){ 
+  public void setStockCount(Book book, String operation){ 
     if(operation.equals("BORROW")){
-       stockCount -= 1;
+       book.stockCount -= 1;
     }else if(operation.equals("RETURN")){
-      stockCount += 1;
+      book.stockCount += 1;
     }else{
       System.out.println("Invalid operation");
     }
@@ -37,6 +37,9 @@ public class Book {
 
   public String getStatus(){
     return (stockCount > 0) ? "AVAILABLE" : "UNAVAILABLE";
+  }
+  public int getStockCount(){
+    return this.stockCount;
   }
   
 }
