@@ -1,115 +1,151 @@
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Scanner;
-import java.lang.Math;
+import java.util.UUID;
+
+/**
+ * Represents a librarian who manages core functions such as lending books, processing book returns, handling user login and registration, managing the library's collection, and displaying available books.
+ */
 public class Librarian {
-  private ArrayList<User> userList;
-  private ArrayList<Book> bookList;
-  private Scanner input;
-  private Book book;
-  private String LibrarianName;
-  private String LibrarianId;
+  private ArrayList<User> userList; // To store the users data
+  private ArrayList<Book> bookList;// To store the books data
+  private FileManager fileManager;
+  private UserInput userInput;
 
+  /**
+   * Initializes the librarian class by setting up the necessary resources such as the booklist and userlist.
+   * It also creates instances of FileManager and UserInput classes.
+   * And loads the existing books and users data from the disk
+   */
   public Librarian() {
-    this.input = new Scanner(System.in);
     bookList = new ArrayList<Book>();
-    userList = new ArrayList<User>();    
-    book = new Book();
-    loadBooksFromDisk();
-    loadUsersDataFromDisk();
+    userList = new ArrayList<User>();
+    fileManager = new FileManager(userList, bookList);
+    userInput = new UserInput(this, fileManager); 
+    fileManager.loadBooksFromDisk("Books.txt"); 
+    fileManager.loadUsersDataFromDisk("Users.txt"); 
   }
 
-  private void writeUserDataToDisk(User user){
-    try(BufferedWriter bw = new BufferedWriter(new FileWriter("Users.txt", true))){    
-        String userData = user.getUserId() + " | "  + user.getuserPassword() + " | " + user.getUserName() + " | " + user.getUserGmailId() + " | " + user.getUserStatus();
-        bw.write(userData);
-        bw.newLine();
-      
-    }catch(IOException e){
-      System.err.println("Error writing to file " + e);
-    }
-  }
-  private void loadUsersDataFromDisk(){
-    try(BufferedReader br = new BufferedReader(new FileReader("Users.txt"))){    
-      String userData;
-      while((userData = br.readLine()) != null){      
-        String parts[] = userData.split("\\|");
-        if(parts.length == 5){
-          User user = new User();
-          user.setUserId(parts[0].trim());
-          user.setUserPassword(parts[1].trim());
-          user.setUserName(parts[2].trim());
-          user.setUserGmailId(parts[3].trim());
-          user.setUserStatus(parts[4].trim());
-          userList.add(user);
-        }else{
-          System.out.println("Invalid format of data while reading users data from disk");
-          break;          
-        }
-      }
-    }catch(FileNotFoundException e){
-      System.err.println("Error locating the file. " + e);
-    }catch(IOException e){
-      System.err.println("Error reading the file. " + e);
-    }
-  }
-  public void returnBookFromUser(String bookName){
+  /**
+   * Process the return of a book from the user by incrementing its stock count by one, if its already present in the library's collection.
+   * 
+   * @param userId   the ID of the user returning the book
+   * @param bookName the name of the book being returned
+   */
+  public void returnBookFromUser(String userId, String bookName) {
     Book book = findBook(bookName);
-    book.setStockCount(book, "RETURN");
-    System.out.println("Book returned successfully");
+    if (book != null) {
+      book.setStockCount(1);
+      System.out.println("Book returned from " + userId + "succesfully");
+    } else {
+      System.out.println("Book not found");
+    }
   }
-  private Book findBook(String bookName){
-    for(Book book : bookList){
-      if(book.getBookName().equals(bookName)){
+
+  /**
+   * Searches for a book by its name in the library's collection and print its
+   * details if found.
+   * 
+   * @param bookName the name of the book to search for
+   * @return true if the book is found and available; false otherwise
+   */
+  public boolean searchBook(String bookName) {
+    Book book = findBook(bookName);
+    if (book != null) {
+      printBookDetails(book);
+      return true;
+    } else {
+      System.out.println("Book not available");
+      return false;
+    }
+  }
+
+  /**
+   * Finds a book by its name and returns it reference
+   * 
+   * @param bookName the name of the book to find
+   * @return the reference to the book if its present in the library's collection;
+   *         null otherwise
+   */
+  private Book findBook(String bookName) {
+    for (Book book : bookList) {
+      if (book.getBookName().equals(bookName)) {
         return book;
       }
     }
     return null;
   }
-  private boolean isBookAvailable(String bookName){
+
+  /**
+   * Checks for the availability of the book by its name
+   * 
+   * @param bookName the name of the book to check for 
+   * @return true if the book is currently available; false otherwise
+   */
+  private boolean isBookAvailable(String bookName) {
     Book book = findBook(bookName);
-    if(book == null){
+    if (book == null) {
       System.out.println("null at " + bookName);
+      return false;
     }
-    if(book.getStatus().equals("AVAILABLE")){
+    else if (book.getStatus().equals("AVAILABLE")) {
       return true;
     }
     return false;
   }
-  public void borrowToUser(User user, String bookName){
-    if(findUser(user.getUserId()) != null){
-      if(isBookAvailable(bookName)){
-        Book book = findBook(bookName);
-        book.setStockCount(book, "BORROW");
-        System.out.println("Book borrowed successfully");
-      }else{
+
+  /**
+   * Lends a book to a registered user if the book is available in stock.
+   * The stock count of the book is decremented by one upon a successful borrowing.
+   * @param userId   the ID of the user borrowing the boook
+   * @param bookName the name of the book to borrow
+   */
+  public void borrowToUser(String userId, String bookName) {
+    User user = findUser(userId);
+    if (user != null) {
+      Book book = findBook(bookName);
+      if ((book != null) && isBookAvailable(bookName)) {
+        book.setStockCount(-1);
+        System.out.println("Book borrowed to " + userId + " successfully");
+      } else {
         System.out.println("Book currently unavailable. Try later");
       }
-    }else{
+    } else {
       System.out.println("Unregistered users can't borrow a book ");
     }
   }
-  public boolean userLogin(String userId, String password){
+
+  /**
+   * Verifies the user's ID and password credentials during the login process.
+   * Returns true if the credentials matches an existing user; false otherwise
+   * 
+   * @param userId   the ID of the user logging in
+   * @param password the password of the user logging in
+   * @return true if the login credentials are correct; false otherwise
+   */
+  public boolean userLogin(String userId, String password) {
     User user = findUser(userId);
-    if(user != null){
-      if(user.getuserPassword().equals(password)){
+    if (user != null) {
+      if (user.getUserPassword().equals(password)) {
         return true;
-      }else{
+      } else {
         System.out.println("Enter a valid password");
         return false;
       }
-    }else{
+    } else {
       System.out.println("You are not registered yet.");
       return false;
     }
   }
-  public boolean userRegistration(String name, String gmailId, String password){    
+
+  /**
+   * Registers a new user by collecting their details such name, gmail ID, password.
+   * The user's data is stored in the userlist and also written to the disk.
+   * @param name     the name of the user to register
+   * @param gmailId  the gmail ID of the user to register
+   * @param password the password of the user to register
+   * @return true if the user was successfully registered and data was saved; false otherwise
+   */
+  public boolean userRegistration(String name, String gmailId, String password) {
     User user = new User();
     user.setUserName(name);
     user.setUserId(idGenerator(name));
@@ -117,117 +153,138 @@ public class Librarian {
     user.setUserPassword(password);
     user.setUserStatus("REGISTERED");
     System.out.println("\nYour user details. [note : Take note of your user id and password ]");
-    if(userList.add(user)){
-    printUserDetails(user.getUserId());
-      writeUserDataToDisk(user);
+    if (userList.add(user)) {
+      printUserDetails(user.getUserId());
+      fileManager.writeUserDataToDisk(user);
       return true;
     }
     return false;
-  }
-  private void printBookDetails(Book book){
-    System.out.println(book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | " + book.getStockCount());
-  }
-  private void printUserDetails(String userId){
-    User user = findUser(userId);
-    if(user != null){
-      System.out.println(user.getUserId() + " | " + user.getuserPassword() + " | " + user.getUserName() + " | " + user.getUserGmailId() + " | " + user.getUserStatus());      
-    }else{
-      System.out.println("User not found");
-    }      
   }
 
-  public void viewBookList(){
-    for(Book book : bookList){
-      printBookDetails(book);
+  /**
+   * Displays the information of a book by its reference in a readable format, if its present in the library's collection.
+   * 
+   * @param book the reference to the book object
+   */
+  private void printBookDetails(Book book) {
+    if (book != null) {
+      System.out.println(book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | "
+          + book.getStockCount());
+    } else {
+      System.out.println("Cant print null objects");
     }
   }
-  public void viewUserList(){
-    for(User user : userList){
+
+  /**
+   * Displays the information of a registered user by their user ID in a readable format
+   * 
+   * @param userId the ID of the user to display information
+   */
+  private void printUserDetails(String userId) {
+    User user = findUser(userId);
+    if (user != null) {
+      System.out.println(user.getUserId() + " | " + user.getUserPassword() + " | " + user.getUserName() + " | "
+          + user.getUserGmailId() + " | " + user.getUserStatus());
+    } else {
+      System.out.println("User not found");
+    }
+  }
+
+  /**
+   * Displays information of all the registered users in a readable format
+   */
+  public void viewUserList() {
+    for (User user : userList) {
       printUserDetails(user.getUserId());
     }
-  }  
-  public void addBook() {
-    System.out.println("Enter the book name ");
-    book.setBookName(input.nextLine());
-    System.out.println("Enter the author name ");
-    book.setBookAuthor(input.nextLine());
-    System.out.println("Enter the book genre ");
-    book.setBookGenre(input.nextLine());
-    try{
-      book.setStockCount(Integer.parseInt(input.nextLine()));
-    }catch(NumberFormatException e){
-      System.err.println("Error converting string to number. " + e);
-    }
-    if (bookList.add(book) && (addBookToDisk(book))) {
-      System.out.println("Book added");
+  }
+
+  /**
+   * Adds a new book and its information to the library's collection if its not already present there; otherwise only updates the stock count
+   * 
+   * @param bookName   the name of the book to add
+   * @param authorName the the name of the book's author
+   * @param genre      the genre of the book
+   * @param stockCount the number of stocks to add
+   */
+  public void addBook(String bookName, String authorName, String genre, int stockCount) {
+    Book book = findBook(bookName);
+    if (book == null) {
+      Book newBook = new Book();
+      newBook.setBookName(bookName);
+      newBook.setBookAuthor(authorName);
+      newBook.setBookGenre(genre);
+      newBook.setStockCount(stockCount);
+      if (bookList.add(newBook)) {
+        System.out.println("Book added");
+      } else {
+        System.out.println("Book not added");
+      }
     } else {
-      System.out.println("Book not added");
+      book.setStockCount(stockCount);
     }
+
   }
-  private boolean addBookToDisk(Book book){
-    try(BufferedWriter bw = new BufferedWriter(new FileWriter("Books.txt", true))){
-      String bookDetails = book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | " + book.getStockCount();
-      bw.write(bookDetails);      
-      bw.newLine();      
-      return true;
-    }catch(IOException e){
-      System.err.println("Error writing task to disk. " + e);
-    }
-    return false;
-  }
+
+  /**
+   * Removes a book from the library's collection by its name
+   * 
+   * @param bookName the name of the book to remove
+   */
   public void removeBook(String bookName) {
     Iterator<Book> iterator = bookList.iterator();
-    while(iterator.hasNext()){
-      if(iterator.next().getBookName().equals(bookName)){
+    while (iterator.hasNext()) {
+      if (iterator.next().getBookName().equals(bookName)) {
         iterator.remove();
         System.out.println("Book removed");
         break;
       }
     }
   }
-  private void loadBooksFromDisk(){
-    try(BufferedReader br = new BufferedReader(new FileReader("Books.txt"))){
-      String str;
-      while((str = br.readLine()) != null){        
-        String[] parts = str.split("\\|");
-        if(parts.length != 4){
-          System.out.println("Invalid format " + str);
-          continue;          
-        }
-        book = new Book();
-        try{
-          book.setBookName(parts[0].trim());
-          book.setBookAuthor(parts[1].trim());
-          book.setBookGenre(parts[2].trim());
-          book.setStockCount((Integer.parseInt(parts[3].trim())));
-          bookList.add(book);
-        }catch(NumberFormatException e){
-        System.err.println("Error converting string to number. " + e);
-        }
-      }
-    }catch(FileNotFoundException e){
-      System.err.println("Error locating the file. please provide a valid path " + e);
-    }catch(IOException e){
-      System.err.println("Error closing the input stream. " + e);
-    }
+
+  /**
+   * Generates a random user Id from a given user's name.Also removes the
+   * empty spaces in the user's name.
+   * 
+   * @param userName the name of the user to generate ID for
+   * @return the generated user ID
+   */
+  private String idGenerator(String userName) {
+    return userName.replaceAll(" ", "") + "" + UUID.randomUUID();
   }
-  private String idGenerator(String userName){
-    return userName + "" + (int)(Math.random() * 100);
-  }
-  public User findUser(String userId){
-    for(User user : userList){
-      if(user.getUserId().equals(userId)){
-        return user;        
+
+  /**
+   * Finds a user in the userlist by their ID
+   * 
+   * @param userId the ID of the user to find
+   * @return a reference to the user object if found; null otherwise
+   */
+  public User findUser(String userId) {
+    for (User user : userList) {
+      if (user.getUserId().equals(userId)) {
+        return user;
       }
     }
     return null;
   }
-  public void showAllAvailableBooks(){
-    for(Book book : bookList){
-      if(isBookAvailable(book.getBookName())){
+
+  /**
+   * Displays all the available books in the booklist in a readable format
+   */
+  public void showAllAvailableBooks() {
+    for (Book book : bookList) {
+      if (isBookAvailable(book.getBookName())) {
         printBookDetails(book);
       }
     }
   }
 
+  /**
+   * Creates a new instance of the Librarian class and also calls the start method of the UserInput class.
+   * @param args command line arguments(not used)
+   */
+  public static void main(String[] args) {
+    Librarian librarian = new Librarian();
+    librarian.userInput.start();
+  }
 }

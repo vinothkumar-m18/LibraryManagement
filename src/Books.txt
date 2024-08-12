@@ -6,7 +6,6 @@ Pride and Prejudice | Jane Austen | Romance | 14
 Becoming | Michelle Obama | Biography | 11
 The Catcher in the Rye | J.D. Salinger | Fiction | 13
 Sapiens: A Brief History of Humankind | Yuval Noah Harari | History | 16
-The Road | Cormac McCarthy | Post-apocalyptic | 9
 Thinking, Fast and Slow | Daniel Kahneman | Psychology | 17
 The Alchemist | Paulo Coelho | Fiction | 8
 Educated | Tara Westover | Memoir | 7
@@ -22,9 +21,15 @@ Gone Girl | Gillian Flynn | Mystery | 10
 The Immortal Life of Henrietta Lacks | Rebecca Skloot | Biography | 8
 A Brief History of Time | Stephen Hawking | Science | 17
 The Handmaid's Tale | Margaret Atwood | Dystopian | 9
-Little Women | Louisa May Alcott | Classic | 11
+Little Women | Louisa May Alcott | Classic | 10
 The Outsiders | S.E. Hinton | Young Adult | 20
 The Lean Startup | Eric Ries | Business | 16
 Where the Crawdads Sing | Delia Owens | Fiction | 7
-The Art of War | Sun Tzu | Philosophy | 6
+The Art of War | Sun Tzu | Philosophy | 5
 The Name of the Wind | Patrick Rothfuss | Fantasy | 14
+Rich Dad Poor Dad | Peter Williams | Finance | 13
+Rich Dad Poor Dad | Peter Williams | Finance | 14
+book1 | vinoth | comedy | 11
+book3 | virat | romance | 5
+book4 | dhoni | comedy | 15
+book5 | pandya | thriller | 18
