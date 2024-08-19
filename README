@@ -1,0 +1,48 @@
+# Library Management Application
+
+## Overview
+This is a basic library management system build using java. This system allows its users to manage books, patrons, and transactions efficiently. It is a command-line-based application designed for learning and understanding core java concepts.
+
+## Features
+-Add, view, and delete books from the library.
+-Register new patrons and manage their information.
+-Borrow and return books, and tracking the status of each transaction. 
+-Search for books by book name.
+-Command line interface for easy interaction.
+
+## Getting Started
+### Prerequisites
+- Java Development Kit (JDK) installed
+- A code editor or IDE (like IntelliJ IDEA, Eclipse, or VS Code)
+
+### Installation
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/vinothkumar-m18/LibraryManagement.git
+    ```
+2. Navigate to the project directory:
+    ```sh
+    cd LibraryManagement
+    ```
+3. Compile the Java files:
+    ```sh
+    javac src/*.java
+    ```
+4. Run the application:
+    ```sh
+    java src.Librarian
+    ```
+
+## Usage
+- Follow the on-screen menu to perform various task management operations.
+- To exit the application, choose the 'Exit' option from the main menu.
+
+## Contributing
+- Fork the repository
+- Create a new branch (`git checkout -b feature/your-feature`)
+- Commit your changes (`git commit -m 'Add some feature'`)
+- Push to the branch (`git push origin feature/your-feature`)
+- Open a pull request
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
