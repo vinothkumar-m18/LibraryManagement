@@ -1,0 +1,44 @@
+"To Kill a Mockingbird" | Harper Lee | Fiction | 15
+"1984" | George Orwell | Dystopian | 20
+"Pride and Prejudice" | Jane Austen | Romance | 18
+"The Great Gatsby" | F. Scott Fitzgerald | Fiction | 12
+"Moby Dick" | Herman Melville | Adventure | 10
+"The Catcher in the Rye" | J.D. Salinger | Fiction | 22
+"War and Peace" | Leo Tolstoy | Historical | 8
+"The Hobbit" | J.R.R. Tolkien | Fantasy | 25
+"Brave New World" | Aldous Huxley | Science Fiction | 17
+"The Odyssey" | Homer | Epic | 14
+"Frankenstein" | Mary Shelley | Horror | 19
+"The Da Vinci Code" | Dan Brown | Thriller | 21
+"The Road" | Cormac McCarthy | Post-Apocalyptic | 13
+"Gone Girl" | Gillian Flynn | Mystery | 16
+"The Girl with the Dragon Tattoo" | Stieg Larsson | Crime | 18
+"Harry Potter and the Sorcerer's Stone" | J.K. Rowling | Fantasy | 30
+"The Alchemist" | Paulo Coelho | Adventure | 22
+"The Fault in Our Stars" | John Green | Young Adult | 20
+"A Game of Thrones" | George R.R. Martin | Fantasy | 15
+"The Shining" | Stephen King | Horror | 13
+"The Kite Runner" | Khaled Hosseini | Fiction | 17
+"Dune" | Frank Herbert | Science Fiction | 14
+"The Martian" | Andy Weir | Science Fiction | 16
+"The Hunger Games" | Suzanne Collins | Dystopian | 19
+"The Handmaid's Tale" | Margaret Atwood | Dystopian | 10
+"The Book Thief" | Markus Zusak | Historical Fiction | 12
+"The Secret History" | Donna Tartt | Mystery | 15
+"The Name of the Wind" | Patrick Rothfuss | Fantasy | 21
+"American Gods" | Neil Gaiman | Fantasy | 18
+"The Subtle Art of Not Giving a F*ck" | Mark Manson | Self-Help | 25
+"Sapiens: A Brief History of Humankind" | Yuval Noah Harari | Non-Fiction | 20
+"Educated" | Tara Westover | Memoir | 16
+"Becoming" | Michelle Obama | Biography | 22
+"Atomic Habits" | James Clear | Self-Help | 28
+"The Immortal Life of Henrietta Lacks" | Rebecca Skloot | Non-Fiction | 12
+"Thinking, Fast and Slow" | Daniel Kahneman | Psychology | 14
+"The Lean Startup" | Eric Ries | Business | 20
+"The Art of War" | Sun Tzu | Strategy | 18
+"Meditations" | Marcus Aurelius | Philosophy | 13
+"The Four Agreements" | Don Miguel Ruiz | Spirituality | 17
+"The Power of Habit" | Charles Duhigg | Self-Help | 21
+"Man's Search for Meaning" | Viktor E. Frankl | Psychology | 19
+"The 7 Habits of Highly Effective People" | Stephen R. Covey | Self-Help | 25
+"A Brief History of Time" | Stephen Hawking | Science | 14
