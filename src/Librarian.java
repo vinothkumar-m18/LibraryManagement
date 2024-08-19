@@ -3,7 +3,9 @@ import java.util.Iterator;
 import java.util.UUID;
 
 /**
- * Represents a librarian who manages core functions such as lending books, processing book returns, handling user login and registration, managing the library's collection, and displaying available books.
+ * Represents a librarian who manages core functions such as lending books,
+ * processing book returns, handling user login and registration, managing the
+ * library's collection, and displaying available books.
  */
 public class Librarian {
   private ArrayList<User> userList; // To store the users data
@@ -12,7 +14,8 @@ public class Librarian {
   private UserInput userInput;
 
   /**
-   * Initializes the librarian class by setting up the necessary resources such as the booklist and userlist.
+   * Initializes the librarian class by setting up the necessary resources such as
+   * the booklist and userlist.
    * It also creates instances of FileManager and UserInput classes.
    * And loads the existing books and users data from the disk
    */
@@ -20,18 +23,19 @@ public class Librarian {
     bookList = new ArrayList<Book>();
     userList = new ArrayList<User>();
     fileManager = new FileManager(userList, bookList);
-    userInput = new UserInput(this, fileManager); 
-    fileManager.loadBooksFromDisk("Books.txt"); 
-    fileManager.loadUsersDataFromDisk("Users.txt"); 
+    userInput = new UserInput(this, fileManager);
+    fileManager.loadBooksFromDisk();
+    fileManager.loadUsersDataFromDisk();
   }
 
   /**
-   * Process the return of a book from the user by incrementing its stock count by one, if its already present in the library's collection.
+   * Process the return of a book from the user by incrementing its stock count by
+   * one, if its already present in the library's collection.
    * 
    * @param userId   the ID of the user returning the book
    * @param bookName the name of the book being returned
    */
-  public void returnBookFromUser(String userId, String bookName) {
+  public void returnBookFromUser(UUID userId, String bookName) {
     Book book = findBook(bookName);
     if (book != null) {
       book.setStockCount(1);
@@ -78,7 +82,7 @@ public class Librarian {
   /**
    * Checks for the availability of the book by its name
    * 
-   * @param bookName the name of the book to check for 
+   * @param bookName the name of the book to check for
    * @return true if the book is currently available; false otherwise
    */
   private boolean isBookAvailable(String bookName) {
@@ -86,8 +90,7 @@ public class Librarian {
     if (book == null) {
       System.out.println("null at " + bookName);
       return false;
-    }
-    else if (book.getStatus().equals("AVAILABLE")) {
+    } else if (book.getStatus().equals("AVAILABLE")) {
       return true;
     }
     return false;
@@ -95,19 +98,23 @@ public class Librarian {
 
   /**
    * Lends a book to a registered user if the book is available in stock.
-   * The stock count of the book is decremented by one upon a successful borrowing.
+   * The stock count of the book is decremented by one upon a successful
+   * borrowing.
+   * 
    * @param userId   the ID of the user borrowing the boook
    * @param bookName the name of the book to borrow
    */
-  public void borrowToUser(String userId, String bookName) {
+  public void borrowToUser(UUID userId, String bookName) {
     User user = findUser(userId);
     if (user != null) {
       Book book = findBook(bookName);
       if ((book != null) && isBookAvailable(bookName)) {
         book.setStockCount(-1);
         System.out.println("Book borrowed to " + userId + " successfully");
-      } else {
+      } else if(book == null){
         System.out.println("Book currently unavailable. Try later");
+      }else{
+        System.out.println("Invalid book name");
       }
     } else {
       System.out.println("Unregistered users can't borrow a book ");
@@ -122,7 +129,7 @@ public class Librarian {
    * @param password the password of the user logging in
    * @return true if the login credentials are correct; false otherwise
    */
-  public boolean userLogin(String userId, String password) {
+  public boolean userLogin(UUID userId, String password) {
     User user = findUser(userId);
     if (user != null) {
       if (user.getUserPassword().equals(password)) {
@@ -138,17 +145,20 @@ public class Librarian {
   }
 
   /**
-   * Registers a new user by collecting their details such name, gmail ID, password.
+   * Registers a new user by collecting their details such name, gmail ID,
+   * password.
    * The user's data is stored in the userlist and also written to the disk.
+   * 
    * @param name     the name of the user to register
    * @param gmailId  the gmail ID of the user to register
    * @param password the password of the user to register
-   * @return true if the user was successfully registered and data was saved; false otherwise
+   * @return true if the user was successfully registered and data was saved;
+   *         false otherwise
    */
   public boolean userRegistration(String name, String gmailId, String password) {
     User user = new User();
     user.setUserName(name);
-    user.setUserId(idGenerator(name));
+    user.setUserId(idGenerator());
     user.setUserGmailId(gmailId);
     user.setUserPassword(password);
     user.setUserStatus("REGISTERED");
@@ -162,7 +172,8 @@ public class Librarian {
   }
 
   /**
-   * Displays the information of a book by its reference in a readable format, if its present in the library's collection.
+   * Displays the information of a book by its reference in a readable format, if
+   * its present in the library's collection.
    * 
    * @param book the reference to the book object
    */
@@ -176,11 +187,12 @@ public class Librarian {
   }
 
   /**
-   * Displays the information of a registered user by their user ID in a readable format
+   * Displays the information of a registered user by their user ID in a readable
+   * format
    * 
    * @param userId the ID of the user to display information
    */
-  private void printUserDetails(String userId) {
+  private void printUserDetails(UUID userId) {
     User user = findUser(userId);
     if (user != null) {
       System.out.println(user.getUserId() + " | " + user.getUserPassword() + " | " + user.getUserName() + " | "
@@ -200,7 +212,8 @@ public class Librarian {
   }
 
   /**
-   * Adds a new book and its information to the library's collection if its not already present there; otherwise only updates the stock count
+   * Adds a new book and its information to the library's collection if its not
+   * already present there; otherwise only updates the stock count
    * 
    * @param bookName   the name of the book to add
    * @param authorName the the name of the book's author
@@ -249,8 +262,8 @@ public class Librarian {
    * @param userName the name of the user to generate ID for
    * @return the generated user ID
    */
-  private String idGenerator(String userName) {
-    return userName.replaceAll(" ", "") + "" + UUID.randomUUID();
+  private  UUID idGenerator() {
+    return UUID.randomUUID();
   }
 
   /**
@@ -259,7 +272,7 @@ public class Librarian {
    * @param userId the ID of the user to find
    * @return a reference to the user object if found; null otherwise
    */
-  public User findUser(String userId) {
+  public User findUser(UUID userId) {
     for (User user : userList) {
       if (user.getUserId().equals(userId)) {
         return user;
@@ -272,6 +285,10 @@ public class Librarian {
    * Displays all the available books in the booklist in a readable format
    */
   public void showAllAvailableBooks() {
+    if(bookList.size() <= 0){
+      System.out.println("No books available in the library's collection");
+      return;
+    }
     for (Book book : bookList) {
       if (isBookAvailable(book.getBookName())) {
         printBookDetails(book);
@@ -280,7 +297,9 @@ public class Librarian {
   }
 
   /**
-   * Creates a new instance of the Librarian class and also calls the start method of the UserInput class.
+   * Main method of the Librarian class which starts the application by calling
+   * the start method of the UserInput class.
+   * 
    * @param args command line arguments(not used)
    */
   public static void main(String[] args) {
