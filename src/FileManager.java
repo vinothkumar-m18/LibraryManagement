@@ -64,7 +64,7 @@ public class FileManager {
   public void writeUserDataToDisk(User user) {
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(usersDataFile, true))) {
       String userData = user.getUserId() + "| " + user.getUserPassword() + " | " + user.getUserName() + " | "
-          + user.getUserGmailId() + " | " + user.getUserStatus();
+          + user.getUserGmailId();
       bw.write(userData);
       bw.newLine();
     } catch (IOException e) {
@@ -91,7 +91,7 @@ public class FileManager {
         String userData;
         while ((userData = br.readLine()) != null) {
           String parts[] = userData.split("\\|");
-          if (parts.length == 5) {
+          if (parts.length == 4) {
             User user = new User();
             try{
               System.out.println(parts[0]);
@@ -103,7 +103,6 @@ public class FileManager {
             user.setUserPassword(parts[1].trim());
             user.setUserName(parts[2].trim());
             user.setUserGmailId(parts[3].trim());
-            user.setUserStatus(parts[4].trim());
             userList.add(user);
           } else {
             System.out.println("Invalid format of data while reading the file containing the users data");

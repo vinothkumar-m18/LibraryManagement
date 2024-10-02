@@ -1,7 +1,6 @@
 import java.util.UUID;
 /**
- * Represents a user in the system who has a unique Name, User ID, Gmail ID,
- * Status, and a Password.
+ * Represents a user in the system who has a unique Name, User ID, Gmail ID, and a Password.
  * It provides methods to set and get the attributes of the user. Also provides
  * functionalities like borrowing a book, returning a book, and viewing all the
  * available books.
@@ -10,8 +9,7 @@ import java.util.UUID;
 public class User {
   private String userName; // To Store the user's name
   private UUID userId; // To store the user ID
-  private String userGmailId; // The store the gmail ID
-  private String userStatus; // To store the status of the user
+  private String userGmailId; // The store the gmail ID  
   private String userPassword; // To store the user password
 
   /**
@@ -41,14 +39,7 @@ public class User {
     this.userGmailId = userGmailId;
   }
 
-  /**
-   * Sets the user's status
-   * 
-   * @param userStatus the user's status to set
-   */
-  public void setUserStatus(String userStatus) {
-    this.userStatus = userStatus;
-  }
+  
 
   /**
    * Sets the user's password
@@ -86,14 +77,7 @@ public class User {
     return this.userGmailId;
   }
 
-  /**
-   * Gets the user's status
-   * 
-   * @return the status of the user
-   */
-  public String getUserStatus() {
-    return this.userStatus;
-  }
+  
 
   /**
    * Gets the user's password
@@ -122,7 +106,7 @@ public class User {
    * @param bookName  the name of the book to return
    */
   public void returnBook(Librarian librarian, String bookName) {
-    librarian.returnBookFromUser(userId, bookName);
+    librarian.getBackBookFromUser(userId, bookName);
   }
 
   /**

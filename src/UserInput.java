@@ -30,7 +30,7 @@ public class UserInput {
 
   /**
    * Evalauates whether a gmail ID is valid by checking some conditions such as
-   * thee presence of spaces, special characters, and ensuring the gmail ID is not
+   * the presence of spaces, special characters, and ensuring the gmail ID is not
    * empty.
    * 
    * @param gmailID the gmail ID of the user to evaluate
@@ -49,14 +49,13 @@ public class UserInput {
         System.out.println("Gmail Id cannot contain spaces");
         return false;
       } else if (containsSymbol(gmailId, "GMAIL")) {
-        System.out.println("Gmail Id cannot contain symbols other than '.' and '@'");
+        System.out.println("Gmail Id can only contain symbols including '.' and '@' ");
         return false;
       } else if (array1[i] == 64) {
 
         for (int j = 0, k = i; (k < array1.length && j < array2.length); j++, k++) {
           if (array1[k] != array2[j]) {
-            System.out.println("Invalid gmail address. '@' should be followed by [gmail.com]");
-            System.out.println("Also More than single occurance of '@' is not allowed");
+            System.out.println("Invalid gmail address. '@' must be followed by [gmail.com]");            
             return false;
           }
         }
@@ -68,9 +67,7 @@ public class UserInput {
   }
 
   /**
-   * Evaluates a string to determine if it contains a special character based on
-   * its meta data type.
-   * (e.g., username, password, gmail).
+   * Evaluates a string to determine if it contains a special character based on its type.
    * 
    * @param string   the string to evaluate
    * @param metaData the meta data about the string type(e.g., "USERNAME",
@@ -251,7 +248,7 @@ public class UserInput {
             case "R":
               String userName, gmailId, password;
               do {
-                System.out.println("\nEnter your userName");
+                System.out.println("\nEnter your Name");
                 userName = scanner.nextLine();
               } while (!isValidUserName(userName));
               do {

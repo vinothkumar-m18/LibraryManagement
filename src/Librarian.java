@@ -35,7 +35,7 @@ public class Librarian {
    * @param userId   the ID of the user returning the book
    * @param bookName the name of the book being returned
    */
-  public void returnBookFromUser(UUID userId, String bookName) {
+  public void getBackBookFromUser(UUID userId, String bookName) {
     Book book = findBook(bookName);
     if (book != null) {
       book.setStockCount(1);
@@ -72,7 +72,8 @@ public class Librarian {
    */
   private Book findBook(String bookName) {
     for (Book book : bookList) {
-      if (book.getBookName().equals(bookName)) {
+      System.out.println(book.getBookName() + " ::: " + bookName);
+      if (book.getBookName().trim().equalsIgnoreCase(bookName.trim())) {
         return book;
       }
     }
@@ -88,7 +89,7 @@ public class Librarian {
   private boolean isBookAvailable(String bookName) {
     Book book = findBook(bookName);
     if (book == null) {
-      System.out.println("null at " + bookName);
+      System.out.println("The book \" " + bookName + "\" " + "not found in the library's collection");
       return false;
     } else if (book.getStatus().equals("AVAILABLE")) {
       return true;
@@ -112,9 +113,7 @@ public class Librarian {
         book.setStockCount(-1);
         System.out.println("Book borrowed to " + userId + " successfully");
       } else if(book == null){
-        System.out.println("Book currently unavailable. Try later");
-      }else{
-        System.out.println("Invalid book name");
+        System.out.println("The Book " + "\" " + bookName + " \" is not found in the library's collection");
       }
     } else {
       System.out.println("Unregistered users can't borrow a book ");
@@ -161,8 +160,7 @@ public class Librarian {
     user.setUserId(idGenerator());
     user.setUserGmailId(gmailId);
     user.setUserPassword(password);
-    user.setUserStatus("REGISTERED");
-    System.out.println("\nYour user details. [note : Take note of your user id and password ]");
+    System.out.println("\nYour user details. [Take note of your user id and password ]");
     if (userList.add(user)) {
       printUserDetails(user.getUserId());
       fileManager.writeUserDataToDisk(user);
@@ -182,7 +180,7 @@ public class Librarian {
       System.out.println(book.getBookName() + " | " + book.getBookAuthor() + " | " + book.getBookGenre() + " | "
           + book.getStockCount());
     } else {
-      System.out.println("Cant print null objects");
+      System.out.println("Can't print null objects");
     }
   }
 
@@ -196,7 +194,7 @@ public class Librarian {
     User user = findUser(userId);
     if (user != null) {
       System.out.println(user.getUserId() + " | " + user.getUserPassword() + " | " + user.getUserName() + " | "
-          + user.getUserGmailId() + " | " + user.getUserStatus());
+          + user.getUserGmailId());
     } else {
       System.out.println("User not found");
     }
@@ -286,7 +284,7 @@ public class Librarian {
    */
   public void showAllAvailableBooks() {
     if(bookList.size() <= 0){
-      System.out.println("No books available in the library's collection");
+      System.out.println("Currently no books are available in the library's collection");
       return;
     }
     for (Book book : bookList) {
